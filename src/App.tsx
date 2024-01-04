@@ -3,7 +3,8 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
-//테스트
+
+// 테스트 커밋을 위한 수정사항
 function App() {
   const [count, setCount] = useState(0)
 
