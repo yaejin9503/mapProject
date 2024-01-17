@@ -38,7 +38,8 @@ function App() {
         return addGeocoder(data); 
       })
       .then((data) => { 
-        setNoDupplicatteAddress(data);
+        setTimeout(() => setNoDupplicatteAddress(data), 100);
+        
       })
   }
 
@@ -47,6 +48,7 @@ function App() {
    
     for (const house of data) {
       geocoder.addressSearch(house.address, function (result: Array<AddressFucResult>, status: kakao.maps.services.Status) {
+        console.log(status === kakao.maps.services.Status.OK)
         if (status === kakao.maps.services.Status.OK) {
           const compareAddress = result[0].address_name.split(' ').join('').trim();
           const index = data.findIndex(({ notSpaceAddress }) => notSpaceAddress === compareAddress);
