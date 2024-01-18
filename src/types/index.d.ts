@@ -1,12 +1,5 @@
-export { };
+import "kakao.maps.d.ts";
 
 declare global {
-  interface Window {
-    kakao: kakao.maps;
-  }
-}
-
-export interface Coordinate {
-  longitude: number,
-  latitude: number
+  interface Window {}
 }

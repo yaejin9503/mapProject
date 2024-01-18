@@ -42,3 +42,8 @@ export type AddressFucResult = {
   address: kakao.maps.services.Address, 
   road_address: kakao.maps.services.RoadAaddress
 }
+
+export interface Coordinate {
+  longitude: number;
+  latitude: number;
+}
