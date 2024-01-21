@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { HouseInfo, MarkerInfo } from "../../commons/types/types";
 
 interface IMarkerprops { 
@@ -6,10 +6,17 @@ interface IMarkerprops {
   data : Array<HouseInfo>
 }
 
-export default function KakaoMapMarker(props : IMarkerprops){ 
+export default function KakaoMapMarker(props : IMarkerprops){  
+  const [ marker, setMarker ] = useState<Array<HouseInfo>>([]); 
+
+  useEffect(() => { 
+    return setMarker(props.data);
+  }, [props.data])
+
 
   useEffect(() => { 
     const positions: Array<MarkerInfo> = [];
+
     props.data.forEach((house: HouseInfo) => {
       const obj: MarkerInfo = {
         content: `<div style="color:#000;text-align:center">${house.houseName}</div>`,
@@ -17,6 +24,7 @@ export default function KakaoMapMarker(props : IMarkerprops){
       };
       positions.push(obj);
     })
+
 
     for (let i = 0; i < positions.length; i++) {
       // 마커를 생성합니다
@@ -51,8 +59,9 @@ export default function KakaoMapMarker(props : IMarkerprops){
       };
     }
 
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.data])
+  }, [marker])
 
   return( 
     <></>
