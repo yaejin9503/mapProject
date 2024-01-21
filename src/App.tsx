@@ -6,12 +6,13 @@ import { HouseInfo, AddressFucResult } from "./commons/types/types";
 function App() {
   const [longitude, setLongitude] = useState<number>(126.93990862062978);
   const [latitude, setLatitude] = useState<number>(37.56496830314491);
-  const [data, setData] = useState<Array<HouseInfo>>([]);
-  const [noDupplicateAddress, setNoDupplicatteAddress] = useState<Array<HouseInfo>>([]);
+  const [data, setData] = useState<Array<HouseInfo>>([]); //원본 데이터 
+  const [noDupplicateAddress, setNoDupplicatteAddress] = useState<Array<HouseInfo>>([]); // 주소 중복 제거 데이터 
+  const [addGeocoderData, setAddGeoCoderData] = useState<Array<HouseInfo>>([]); //주소 중복 제거 후 경도 위도 추가 
 
   useEffect(() => {
     fetchData();
-  }, [])
+  }, []) 
 
   const fetchData = () => {
     fetch("./src/api/house.json")
@@ -30,42 +31,50 @@ function App() {
               notDupplicate.push(house);
             }
           });
-
           setData(houseArray); 
+          setNoDupplicatteAddress(notDupplicate); 
+          
           return notDupplicate; 
       })
-      .then((data)  => { 
-        return addGeocoder(data); 
-      })
-      .then((data) => { 
-        setTimeout(() => setNoDupplicatteAddress(data), 100);
-        
+      .then((notDupplicate)  => { 
+        addGeocoder(notDupplicate); 
       })
   }
 
-  const addGeocoder = (data : Array<HouseInfo>) => { 
-    const geocoder = new kakao.maps.services.Geocoder();    // 장소 검색 서비스 객체를 생성한다.
-   
-    for (const house of data) {
-      geocoder.addressSearch(house.address, function (result: Array<AddressFucResult>, status: kakao.maps.services.Status) {
-        console.log(status === kakao.maps.services.Status.OK)
-        if (status === kakao.maps.services.Status.OK) {
-          const compareAddress = result[0].address_name.split(' ').join('').trim();
-          const index = data.findIndex(({ notSpaceAddress }) => notSpaceAddress === compareAddress);
 
+  const  addGeocoder = async (notDupplicate : Array<HouseInfo>) => { 
+      const geocoder = new kakao.maps.services.Geocoder();    // 장소 검색 서비스 객체를 생성한다.
+
+      const addressSearchPromise = async (house : HouseInfo) : Promise<AddressFucResult> => {
+        return await new Promise((resolve) => {   
+          geocoder.addressSearch(house.address, function (result : Array<AddressFucResult> ,status :  kakao.maps.services.Status){ 
+            if(status == 'OK' && status === kakao.maps.services.Status.OK){ 
+              resolve(result[0]);
+            }
+          })               
+        })
+      }
+    
+      await Promise.all(notDupplicate.map(house => addressSearchPromise(house))).then((returnData) => {
+        const geocoderData : Array<HouseInfo> = [];  
+        returnData.map((result) => { 
+          const compareAddress = result.address_name.split(' ').join('').trim();
+          const index = notDupplicate.findIndex(({ notSpaceAddress }) => notSpaceAddress === compareAddress);
+          const obj: HouseInfo = { ...notDupplicate[index] }; 
           if (index !== -1) {
-            data[index].longitude = result[0] && Number(result[0]?.x);
-            data[index].latitude = result[0] && Number(result[0]?.y);
+            obj.longitude = result && Number(result?.x);
+            obj.latitude = result && Number(result?.y);
           }
-        }
+          geocoderData.push(obj); 
+        }) 
+        setAddGeoCoderData(geocoderData); 
       })
     }
-    return data; 
-  }
+    
 
   return (
     <>
-      <KakaoMap latitude={latitude} longitude={longitude} data={noDupplicateAddress} />
+      <KakaoMap latitude={latitude} longitude={longitude} data={addGeocoderData} />
     </>
   )
 }
