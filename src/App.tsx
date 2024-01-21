@@ -42,11 +42,11 @@ function App() {
   }
 
 
-  const  addGeocoder = async (notDupplicate : Array<HouseInfo>) => { 
+  const  addGeocoder = (notDupplicate : Array<HouseInfo>) => { 
       const geocoder = new kakao.maps.services.Geocoder();    // 장소 검색 서비스 객체를 생성한다.
 
-      const addressSearchPromise = async (house : HouseInfo) : Promise<AddressFucResult> => {
-        return await new Promise((resolve) => {   
+      const addressSearchPromise = (house : HouseInfo) : Promise<AddressFucResult> => {
+        return new Promise((resolve) => {   
           geocoder.addressSearch(house.address, function (result : Array<AddressFucResult> ,status :  kakao.maps.services.Status){ 
             if(status == 'OK' && status === kakao.maps.services.Status.OK){ 
               resolve(result[0]);
@@ -55,7 +55,7 @@ function App() {
         })
       }
     
-      await Promise.all(notDupplicate.map(house => addressSearchPromise(house))).then((returnData) => {
+       Promise.all(notDupplicate.map(house => addressSearchPromise(house))).then((returnData) => {
         const geocoderData : Array<HouseInfo> = [];  
         returnData.map((result) => { 
           const compareAddress = result.address_name.split(' ').join('').trim();
