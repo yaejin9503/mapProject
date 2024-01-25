@@ -3,11 +3,11 @@ import { HouseInfo, MarkerInfo } from "../../commons/types/types";
 
 interface IMarkerprops { 
   map: kakao.maps.Map
-  data : Array<HouseInfo>
+  data : Array<HouseInfo> | undefined
 }
 
 export default function KakaoMapMarker(props : IMarkerprops){  
-  const [ marker, setMarker ] = useState<Array<HouseInfo>>([]); 
+  const [ marker, setMarker ] = useState<Array<HouseInfo> | undefined>([]); 
 
   useEffect(() => { 
     return setMarker(props.data);
@@ -17,7 +17,7 @@ export default function KakaoMapMarker(props : IMarkerprops){
   useEffect(() => { 
     const positions: Array<MarkerInfo> = [];
 
-    props.data.forEach((house: HouseInfo) => {
+    props?.data?.forEach((house: HouseInfo) => {
       const obj: MarkerInfo = {
         content: `<div style="color:#000;text-align:center">${house.houseName}</div>`,
         latlng: new kakao.maps.LatLng(house.latitude, house.longitude)
