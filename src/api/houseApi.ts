@@ -2,7 +2,7 @@ import { HouseInfo, AddressFucResult } from "../commons/types/types";
 import _ from "lodash";
 
 // 원본 데이터 가져오는 함수
-export const fetchData = async (): Promise<HouseInfo[]> => {
+export const getHouseData = async (): Promise<HouseInfo[]> => {
   const result = await fetch("./src/api/house.json");
   const { items } = await result.json();
 
@@ -10,9 +10,9 @@ export const fetchData = async (): Promise<HouseInfo[]> => {
 };
 
 // 중복 주소 제거한 데이터 가져오는 함수
-export const removeDupplicateAddress = async () => {
-  const items = await fetchData();
-  const houseArray: Array<HouseInfo> = items.map((house: HouseInfo) => {
+export const uniqHouseData = async () => {
+  const houseData = await getHouseData();
+  const houseArray: Array<HouseInfo> = houseData.map((house: HouseInfo) => {
     house.notSpaceAddress = house.address
       .slice(0, house.address.indexOf("("))
       .replace("서울특별시", "서울")
@@ -30,8 +30,8 @@ export const removeDupplicateAddress = async () => {
 };
 
 // 주소에 맞는 위도, 경도 추가하는 함수
-export const addGeocoder = async () => {
-  const notDupplicate: HouseInfo[] = await removeDupplicateAddress();
+export const houseWithGeocoder = async () => {
+  const _uniqHouseData: HouseInfo[] = await uniqHouseData();
   const geocoder = new kakao.maps.services.Geocoder(); // 장소 검색 서비스 객체를 생성한다.
 
   const addressSearchPromise = (
@@ -54,11 +54,11 @@ export const addGeocoder = async () => {
 
   try {
     const returnData = await Promise.all(
-      notDupplicate.map((house) => addressSearchPromise(house))
+      _uniqHouseData.map((house) => addressSearchPromise(house))
     );
     if (!returnData) return;
 
-    const geocoderData = notDupplicate.map((house) => {
+    const geocoderData = _uniqHouseData.map((house) => {
       const findAddress = returnData.filter(
         (data) =>
           data.address_name.split(" ").join("").trim() === house.notSpaceAddress
