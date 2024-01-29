@@ -4,6 +4,8 @@ import KakaoMap from "./components/common/KakaoMap"
 import { HouseInfo } from "./commons/types/types";
 import { houseWithGeocoder } from "./api/houseApi";
 import { getMyGeoLocation } from "./api/userApi";
+import OptionSearch from "./components/options/OptionSearch";
+
 
 function App() {
   const [longitude, setLongitude] = useState<number>(126.93990862062978);
@@ -34,6 +36,7 @@ function App() {
 
   return (
     <>
+      <OptionSearch></OptionSearch>
       <KakaoMap 
         latitude={latitude} 
         longitude={longitude} 
