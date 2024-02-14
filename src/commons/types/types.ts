@@ -7,6 +7,7 @@ export type IPropsMap = {
 export type HouseInfo = {
   id: number;
   typeName: string;
+  type: string;
   category: string;
   borough: string;
   houseName: string;
@@ -30,7 +31,7 @@ export type HouseInfo = {
 };
 
 export type MarkerInfo = {
-  content: string;
+  content: HTMLElement | string;
   latlng: kakao.maps.LatLng;
 };
 
