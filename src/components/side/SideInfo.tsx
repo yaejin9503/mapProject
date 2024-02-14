@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { HouseInfo, IPropsMap } from "../../commons/types/types";
 import { useUserStore } from "../../store/mapStore";
 import { useOptionStore } from "../../store/optionStore";
@@ -16,39 +15,28 @@ export default function SideInfo(props: IPropsMap) {
   const [originalData, setOriginalData] = useState<HouseInfo[]>([]);
   const [houses, setHouses] = useState<HouseInfo[]>([]);
 
-  const housesLength = originalData.length;
+  // const [housesLength, setHousesLength] = useState(0);
+  const housesLength = originalData.length; // 위 state에서 파생상태로 변경
   const selectedHouse = props.data?.find(
     (item) => item.id === Number(selectedMarkerId)
   );
 
-  const filterPrice = (rank: number, chkUnivStu: boolean, type: string) => {
-    if (rank === 1 && chkUnivStu) {
-      return type === "deposit"
-        ? selectedHouse?.firstNumCollegeStudentDeposit
-        : selectedHouse?.firstNumCollegeStudentRent;
-    } else if (rank === 2 && chkUnivStu) {
-      return type === "deposit"
-        ? selectedHouse?.secondNumCollegeStudentDeposit
-        : selectedHouse?.secondNumCollegeStudentRent;
-    } else if (rank === 1) {
-      return type === "deposit"
-        ? selectedHouse?.fristNumYouthDeposit
-        : selectedHouse?.firstNumYouthRent;
-    } else {
-      return type === "deposit"
-        ? selectedHouse?.secondNumYouthDeposit
-        : selectedHouse?.secondNumYouthRent;
-    }
-  };
+  let deposit;
+  let rent;
 
-  const deposit = useMemo(
-    () => filterPrice(rank, chkUnivStu, "deposit"),
-    [rank, chkUnivStu]
-  );
-  const rent = useMemo(
-    () => filterPrice(rank, chkUnivStu, "rent"),
-    [rank, chkUnivStu]
-  );
+  if (rank === 1 && chkUnivStu) {
+    deposit = selectedHouse?.firstNumCollegeStudentDeposit;
+    rent = selectedHouse?.firstNumCollegeStudentRent;
+  } else if (rank === 2 && chkUnivStu) {
+    deposit = selectedHouse?.secondNumCollegeStudentDeposit;
+    rent = selectedHouse?.secondNumCollegeStudentRent;
+  } else if (rank === 1) {
+    deposit = selectedHouse?.fristNumYouthDeposit;
+    rent = selectedHouse?.firstNumYouthRent;
+  } else {
+    deposit = selectedHouse?.secondNumYouthDeposit;
+    rent = selectedHouse?.secondNumYouthRent;
+  }
 
   useEffect(() => {
     const getHoues = async () => {
@@ -64,6 +52,24 @@ export default function SideInfo(props: IPropsMap) {
     };
     getHoues();
   }, []);
+
+  // 이전에 작성했던 코드
+  // useEffect(() => {
+  //   const getHoues = async () => {
+  //     const data = await getSameAddressHouseData(selectedMarkerId);
+  //     setOriginalData(data);
+
+  //     if (data && Array.isArray(data) && data.length) {
+  //       setHousesLength(data.length);
+  //       if (data.length > 5) {
+  //         setHouses(data.slice(0, 5));
+  //       } else {
+  //         setHouses(data);
+  //       }
+  //     }
+  //   };
+  //   getHoues();
+  // }, [selectedMarkerId]);
 
   const handleClickMoreBtn = () => {
     const data = houses.concat(
