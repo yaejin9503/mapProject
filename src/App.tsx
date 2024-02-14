@@ -21,8 +21,8 @@ function App() {
 
     // 주소에 따른 경도 위도 추가하는 함수
     const getGeoCoderData = async () => {
-      const data = await houseWithGeocoder();
-      if (data) setAddGeoCoderData(data);
+      const data = (await houseWithGeocoder()) as HouseInfo[];
+      setAddGeoCoderData(data);
     };
 
     getMyGeoCoder();
