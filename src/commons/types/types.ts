@@ -1,7 +1,5 @@
 export type IPropsMap = {
-  latitude: number;
-  longitude: number;
-  data: Array<HouseInfo> | undefined;
+  data: Array<HouseInfo>;
 };
 
 export type HouseInfo = {
@@ -28,6 +26,7 @@ export type HouseInfo = {
   secondNumCollegeStudentRent: number;
   longitude: number;
   latitude: number;
+  selected?: boolean;
 };
 
 export type MarkerInfo = {
