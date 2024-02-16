@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import { HouseInfo, MarkerInfo } from "../../commons/types/types";
 import { useOptionStore } from "../../store/optionStore";
@@ -13,24 +13,16 @@ interface IMarkerprops {
 export default function KakaoMapMarker(props: IMarkerprops) {
   // const [isOpen, setIsOpen] = useState<boolean>(false);
   const { setSelectedMarkerId, setLongLat } = useUserStore();
-
   const { rank } = useOptionStore();
-  const [markerHouse, setMarkerHouse] = useState<HouseInfo[]>([]);
-  const [overay, setOveray] = useState<kakao.maps.CustomOverlay[]>();
+  const overay = useRef<kakao.maps.CustomOverlay[]>();
+  const markerHouse = props.data?.map((house) => {
+    house.selected = false;
+    return house;
+  });
 
-  useEffect(() => {
-    const markerHouse = props.data?.map((house) => {
-      house.selected = false;
-      return house;
-    });
-    setMarkerHouse(markerHouse);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.data]);
-
-  const createOveray = () => {
+  const createOveray = (markerHouses: HouseInfo[]) => {
     const customOverlay: kakao.maps.CustomOverlay[] = [];
-    markerHouse.forEach((house: HouseInfo) => {
+    markerHouses.forEach((house: HouseInfo) => {
       const contents = renderingMarker(house);
       const obj: MarkerInfo = createMapObj(contents, house);
       const overay = createCustomOverlay(obj);
@@ -39,21 +31,22 @@ export default function KakaoMapMarker(props: IMarkerprops) {
       overay.setMap(props.map);
       createMapMarkerEvent(contents);
     });
-    setOveray(customOverlay);
+    overay.current = customOverlay;
   };
 
   const removeOveray = () => {
-    overay?.forEach((item) => {
+    overay.current?.forEach((item) => {
       item.setMap(null);
     });
-    setOveray([]);
+    overay.current = [];
   };
 
   useEffect(() => {
     removeOveray();
-    createOveray();
+    createOveray(markerHouse);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [markerHouse, rank]);
+  }, [props.data, rank]);
 
   const addEventHandle = (
     target: HTMLElement,
@@ -105,8 +98,6 @@ export default function KakaoMapMarker(props: IMarkerprops) {
   };
 
   const createMapMarkerEvent = (contents: HTMLElement) => {
-    // customOverlay.setMap(props.map);
-
     addEventHandle(contents, "click", function () {
       setSelectedMarkerId(Number(contents.id));
 
@@ -115,12 +106,13 @@ export default function KakaoMapMarker(props: IMarkerprops) {
       );
 
       if (selectedHouse) {
-        const markers = markerHouse.map((item) => {
+        const markerHoues = markerHouse.map((item) => {
           item.selected = Number(contents.id) === item.id ? true : false;
           return item;
         });
 
-        setMarkerHouse(markers);
+        removeOveray();
+        createOveray(markerHoues);
 
         setLongLat({
           longitude: selectedHouse.longitude,
@@ -129,49 +121,6 @@ export default function KakaoMapMarker(props: IMarkerprops) {
       }
     });
   };
-
-  // useEffect(() => {
-  //   // 선택되엇던 데이터 원래대로 렌더링
-  //   if (selectedMarkerId !== 0) {
-  //     const beforeSelected = marker.filter((item) => item.selected);
-  //     if (
-  //       beforeSelected &&
-  //       Array.isArray(beforeSelected) &&
-  //       beforeSelected.length > 0
-  //     ) {
-  //       beforeSelected[0].selected = false;
-  //       const house = beforeSelected[0];
-
-  //       const contents = renderingMarker(house);
-  //       const obj: MarkerInfo = createMapObj(contents, house);
-  //       const customOverlay = createCustomOverlay(obj);
-
-  //       createMapMarker(customOverlay, contents);
-  //     }
-
-  //     // 선택한 데이터 선택한 렌더링
-  //     const selectedHouse = marker
-  //       .map((item) => {
-  //         if (item.id === selectedMarkerId) {
-  //           item.selected = true;
-  //         }
-  //         return item;
-  //       })
-  //       .filter((item) => item.selected)[0];
-
-  //     const contents = renderingMarker(selectedHouse);
-  //     const obj: MarkerInfo = createMapObj(contents, selectedHouse);
-  //     const customOverlay = createCustomOverlay(obj);
-
-  //     createMapMarker(customOverlay, contents);
-
-  //     //마커 기준으로 중앙값 옮기기,
-  //     setLongitude(selectedHouse.longitude);
-  //     setLatitude(selectedHouse.latitude);
-  //   }
-
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [selectedMarkerId]);
 
   return (
     <>
