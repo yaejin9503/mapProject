@@ -15,7 +15,8 @@ export default function KakaoMapMarker(props: IMarkerprops) {
   const { setSelectedMarkerId, setLongLat } = useUserStore();
   const { rank } = useOptionStore();
   const overay = useRef<kakao.maps.CustomOverlay[]>();
-  const markerHouse = props.data?.map((house) => {
+  const markerData: HouseInfo[] = JSON.parse(JSON.stringify(props.data));
+  const markerHouse = markerData.map((house) => {
     house.selected = false;
     return house;
   });
