@@ -5,8 +5,8 @@ import { useUserStore } from "../../store/mapStore";
 import { useOptionStore } from "../../store/optionStore";
 import KakaoMapRoadView from "../units/KakaoMapRoadView";
 import { getSameAddressHouseData } from "../../api/houseApi";
-import { BsChevronDoubleDown } from "react-icons/bs";
-import { FiChevronRight } from "react-icons/fi";
+import { BsChevronDoubleDown } from "@react-icons/all-files/bs/BsChevronDoubleDown";
+import { FiChevronRight } from "@react-icons/all-files/fi/FiChevronRight";
 
 export default function SideInfo(props: IPropsMap) {
   const { selectedMarkerId, setSelectedMarkerId } = useUserStore();
@@ -74,6 +74,10 @@ export default function SideInfo(props: IPropsMap) {
   const handleClickClose = () => {
     setSelectedMarkerId(0);
   };
+
+  if (!selectedHouse) {
+    return <></>;
+  }
 
   return (
     <>
