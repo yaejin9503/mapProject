@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import { HouseInfo, MarkerInfo } from "../../commons/types/types";
 import { useOptionStore } from "../../store/optionStore";
@@ -15,19 +15,32 @@ export default function KakaoMapMarker(props: IMarkerprops) {
   const { setSelectedMarkerId, setLongLat } = useUserStore();
   const { rank } = useOptionStore();
   const overay = useRef<kakao.maps.CustomOverlay[]>();
-  const markerHouse = props.data?.map((house) => {
-    return {
-      ...house,
-      selected: false,
-    };
-  });
+  // 원본 객체나 원본 배열은 건들이지 않는 방법으로 하는게 좋다!! <- react를 떠나서
+  const markerHouse = useMemo(
+    () =>
+      props.data?.map((house) => {
+        return {
+          ...house,
+          selected: false,
+        };
+      }),
+    [props.data]
+  );
 
   const createOveray = (markerHouses: HouseInfo[]) => {
     const customOverlay: kakao.maps.CustomOverlay[] = [];
     markerHouses.forEach((house: HouseInfo) => {
       const contents = renderingMarker(house);
-      const obj: MarkerInfo = createMapObj(contents, house);
-      const overay = createCustomOverlay(obj);
+      const markerInfo: MarkerInfo = {
+        content: contents,
+        latlng: new kakao.maps.LatLng(house.latitude, house.longitude),
+      };
+
+      const overay = new kakao.maps.CustomOverlay({
+        position: markerInfo.latlng,
+        content: markerInfo.content,
+      });
+
       customOverlay.push(overay);
 
       overay.setMap(props.map);
@@ -83,20 +96,6 @@ export default function KakaoMapMarker(props: IMarkerprops) {
       </div>
       `;
     return contents;
-  };
-
-  const createMapObj = (contents: HTMLElement, house: HouseInfo) => {
-    return {
-      content: contents,
-      latlng: new kakao.maps.LatLng(house.latitude, house.longitude),
-    };
-  };
-
-  const createCustomOverlay = (obj: MarkerInfo): kakao.maps.CustomOverlay => {
-    return new kakao.maps.CustomOverlay({
-      position: obj.latlng,
-      content: obj.content,
-    });
   };
 
   const createMapMarkerEvent = (contents: HTMLElement) => {
