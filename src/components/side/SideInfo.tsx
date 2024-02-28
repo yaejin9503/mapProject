@@ -16,27 +16,29 @@ export default function SideInfo(props: IPropsMap) {
   const [houses, setHouses] = useState<HouseInfo[]>([]);
 
   const housesLength = originalData.length;
-  const selectedHouse = props.data?.find(
+  const selectedHouse = props.data.find(
     (item) => item.id === Number(selectedMarkerId)
   );
 
   const filterPrice = (rank: number, chkUnivStu: boolean, type: string) => {
-    if (rank === 1 && chkUnivStu) {
-      return type === "deposit"
-        ? selectedHouse?.firstNumCollegeStudentDeposit
-        : selectedHouse?.firstNumCollegeStudentRent;
-    } else if (rank === 2 && chkUnivStu) {
-      return type === "deposit"
-        ? selectedHouse?.secondNumCollegeStudentDeposit
-        : selectedHouse?.secondNumCollegeStudentRent;
-    } else if (rank === 1) {
-      return type === "deposit"
-        ? selectedHouse?.fristNumYouthDeposit
-        : selectedHouse?.firstNumYouthRent;
-    } else {
-      return type === "deposit"
-        ? selectedHouse?.secondNumYouthDeposit
-        : selectedHouse?.secondNumYouthRent;
+    if (selectedHouse) {
+      if (rank === 1 && chkUnivStu) {
+        return type === "deposit"
+          ? selectedHouse.firstNumCollegeStudentDeposit
+          : selectedHouse.firstNumCollegeStudentRent;
+      } else if (rank === 2 && chkUnivStu) {
+        return type === "deposit"
+          ? selectedHouse.secondNumCollegeStudentDeposit
+          : selectedHouse.secondNumCollegeStudentRent;
+      } else if (rank === 1) {
+        return type === "deposit"
+          ? selectedHouse.fristNumYouthDeposit
+          : selectedHouse.firstNumYouthRent;
+      } else {
+        return type === "deposit"
+          ? selectedHouse.secondNumYouthDeposit
+          : selectedHouse.secondNumYouthRent;
+      }
     }
   };
 

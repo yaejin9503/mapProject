@@ -18,7 +18,7 @@ export default function KakaoMapMarker(props: IMarkerprops) {
   // 원본 객체나 원본 배열은 건들이지 않는 방법으로 하는게 좋다!! <- react를 떠나서
   const markerHouse = useMemo(
     () =>
-      props.data?.map((house) => {
+      props.data.map((house) => {
         return {
           ...house,
           selected: false,
