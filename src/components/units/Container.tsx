@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import { IPropsMap } from "../../commons/types/types";
 import { useUserStore } from "../../store/mapStore";
 import KakaoMap from "../common/KakaoMap";
@@ -12,7 +12,11 @@ export default function Container(props: IPropsMap) {
     <>
       <OptionSearch></OptionSearch>
       <div className="flex">
-        <SideInfo data={props.data} key={selectedMarkerId} />
+        {selectedMarkerId && (
+          <Suspense fallback={<div>loading..</div>}>
+            <SideInfo data={props.data} key={selectedMarkerId} />
+          </Suspense>
+        )}
         <KakaoMap data={props.data} />
       </div>
     </>
