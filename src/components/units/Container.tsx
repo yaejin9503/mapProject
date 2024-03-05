@@ -12,7 +12,7 @@ export default function Container(props: IPropsMap) {
     <>
       <OptionSearch></OptionSearch>
       <div className="flex">
-        {selectedMarkerId && (
+        {selectedMarkerId !== 0 && (
           <Suspense fallback={<div>loading..</div>}>
             <SideInfo data={props.data} key={selectedMarkerId} />
           </Suspense>
