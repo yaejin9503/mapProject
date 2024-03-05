@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { IPropsMap } from "../../commons/types/types";
 import KakaoMapMarker from "../units/KakaoMapMarker";
 import { useUserStore } from "../../store/mapStore";
+import { FiPlus } from "@react-icons/all-files/fi/FiPlus";
+import { FiMinus } from "@react-icons/all-files/fi/FiMinus";
+import { BiCurrentLocation } from "@react-icons/all-files/bi/BiCurrentLocation";
 
 export default function KakaoMap(props: IPropsMap) {
   const mapDiv = useRef<HTMLDivElement>(null);
@@ -34,6 +37,13 @@ export default function KakaoMap(props: IPropsMap) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [longitude, latitude]);
 
+  const clickPlusMinus = (type: string) => {
+    if (map) {
+      const level = map.getLevel();
+      map.setLevel(type === "+" ? level - 1 : level + 1);
+    }
+  };
+
   return (
     <>
       {map ? <KakaoMapMarker map={map} data={props.data} /> : <> </>}
@@ -44,6 +54,25 @@ export default function KakaoMap(props: IPropsMap) {
           height: "100vh",
         }}
       ></div>
+      <div className="absolute z-10 flex flex-col text-black right-3 bottom-64 rounded-[3px] ">
+        <button className="block p-3 mb-3 bg-white rounded border-solid border border-[#9ca3af] active:bg-[#eef0f3]">
+          <BiCurrentLocation />
+        </button>
+        <div className="border-solid border border-[#9ca3af] rounded">
+          <button
+            onClick={() => clickPlusMinus("+")}
+            className="block p-3 bg-white rounded-t active:bg-[#eef0f3]"
+          >
+            <FiPlus />
+          </button>
+          <button
+            onClick={() => clickPlusMinus("-")}
+            className="block p-3 bg-white rounded-b active:bg-[#eef0f3]"
+          >
+            <FiMinus />
+          </button>
+        </div>
+      </div>
     </>
   );
 }
