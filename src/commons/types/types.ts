@@ -47,3 +47,7 @@ export interface Coordinate {
   longitude: number;
   latitude: number;
 }
+
+export interface IpropsSearchResult {
+  propsData: HouseInfo[];
+}
