@@ -1,6 +1,5 @@
 import { HouseInfo, AddressFucResult } from "../commons/types/types";
-import _ from "lodash";
-
+import uniqBy from "lodash-es/uniqBy";
 // 원본 데이터 가져오는 함수
 export const getHouseData = async (): Promise<HouseInfo[]> => {
   const result = await fetch("./src/api/house.json");
@@ -29,10 +28,7 @@ export const uniqHouseData = async () => {
     return house;
   });
 
-  const notDupplicate: Array<HouseInfo> = _.uniqBy(
-    houseArray,
-    "notSpaceAddress"
-  );
+  const notDupplicate: Array<HouseInfo> = uniqBy(houseArray, "notSpaceAddress");
   return notDupplicate;
 };
 
