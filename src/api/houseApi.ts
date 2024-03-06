@@ -2,8 +2,10 @@ import { HouseInfo, AddressFucResult } from "../commons/types/types";
 import uniqBy from "lodash-es/uniqBy";
 // 원본 데이터 가져오는 함수
 export const getHouseData = async (): Promise<HouseInfo[]> => {
-  const result = await fetch("./src/api/house.json");
-  const { items } = await result.json();
+  const result = await fetch(
+    "https://pulic-rent-housing-default-rtdb.firebaseio.com/house.json"
+  );
+  const items = await result.json();
 
   return items;
 };
