@@ -49,5 +49,6 @@ export interface Coordinate {
 }
 
 export interface IpropsSearchResult {
-  propsData: HouseInfo[];
+  query: string;
+  isStale: boolean;
 }
