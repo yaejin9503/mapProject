@@ -9,7 +9,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 
 function App() {
   const [addGeocoderData, setAddGeoCoderData] = useState<Array<HouseInfo>>([]);
-  const { setLongLat } = useUserStore();
+  const { setLongLat, setMyLongLat } = useUserStore();
 
   useEffect(() => {
     // 내 현재 위치를 가져오는 함수
@@ -17,6 +17,7 @@ function App() {
       const data = await getMyGeoLocation();
       if (data && data.length > 0) {
         setLongLat({ longitude: data[1], latitude: data[0] });
+        setMyLongLat({ longitude: data[1], latitude: data[0] });
       }
     };
 
