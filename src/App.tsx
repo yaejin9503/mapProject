@@ -5,7 +5,7 @@ import { houseWithGeocoder } from "./api/houseApi";
 import { getMyGeoLocation } from "./api/userApi";
 import { useUserStore } from "./store/mapStore";
 import Container from "./components/units/Container";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
   const [addGeocoderData, setAddGeoCoderData] = useState<Array<HouseInfo>>([]);

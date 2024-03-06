@@ -88,5 +88,7 @@ export const findHouses = async (str: string) => {
         (house) => house.houseName.includes(str) || house.address.includes(str)
       );
     }
+  } else {
+    return [];
   }
 };
