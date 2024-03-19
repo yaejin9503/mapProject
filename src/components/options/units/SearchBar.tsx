@@ -29,9 +29,11 @@ export default function SearchBar() {
           <IoSearchSharp />
         </button>
       </div>
-      <Suspense fallback={<div>loading...</div>}>
-        <SearchResult query={deferredInputValue} isStale={isStale} />
-      </Suspense>
+      {deferredInputValue && (
+        <Suspense fallback={<div>loading...</div>}>
+          <SearchResult query={deferredInputValue} isStale={isStale} />
+        </Suspense>
+      )}
     </div>
   );
 }
