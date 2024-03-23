@@ -1,30 +1,25 @@
-# React + TypeScript + Vite
+# 공공임대주택 지도 서비스
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### 왜 만들게 되었는가?
 
-Currently, two official plugins are available:
+기존에 한 페이지에서 확인이 어려웠던 공공주택 정보를
+하나의 페이지에서 확인할 수 있도록 하고싶어서 만들게 되었습니다.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<a href="">페이지 바로가기</a>
 
-## Expanding the ESLint configuration
+## 프로젝트 상세 설명
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+<b>주소별 경도, 위도 정보를 불러와 마커표시</b>
+![alt text](readme/img/image.png)
+<b>마커 이벤트 등록 후, 상세 주택 정보 불러오기</b>
+![alt text](readme/img/image-2.png)
+<b>주택명 or 주소 검색 </b>
+![alt text](readme/img/image-1.png)
 
-- Configure the top-level `parserOptions` property like this:
+- 지도 확대 및 축소
+- 내 위치 중심으로 렌더링 및 내 위치 정보 표시
+- 순위 별 가격 렌더링 필터
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+### 개발 언어 및 라이브러리
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+React.js, TypeScript, Vite, Zustand, TailwindCss, Vercel, React Query

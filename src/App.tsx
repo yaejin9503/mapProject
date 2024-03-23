@@ -5,10 +5,11 @@ import { houseWithGeocoder } from "./api/houseApi";
 import { getMyGeoLocation } from "./api/userApi";
 import { useUserStore } from "./store/mapStore";
 import Container from "./components/units/Container";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
   const [addGeocoderData, setAddGeoCoderData] = useState<Array<HouseInfo>>([]);
-  const { setLongLat } = useUserStore();
+  const { setLongLat, setMyLongLat } = useUserStore();
 
   useEffect(() => {
     // 내 현재 위치를 가져오는 함수
@@ -16,6 +17,7 @@ function App() {
       const data = await getMyGeoLocation();
       if (data && data.length > 0) {
         setLongLat({ longitude: data[1], latitude: data[0] });
+        setMyLongLat({ longitude: data[1], latitude: data[0] });
       }
     };
 
@@ -29,10 +31,12 @@ function App() {
     getGeoCoderData();
   }, []);
 
+  const queryClient = new QueryClient();
+
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <Container data={addGeocoderData} />
-    </>
+    </QueryClientProvider>
   );
 }
 

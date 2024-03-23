@@ -77,10 +77,6 @@ export default function SideInfo(props: IPropsMap) {
     setSelectedMarkerId(0);
   };
 
-  if (!selectedHouse) {
-    return <></>;
-  }
-
   return (
     <>
       {selectedHouse && (
