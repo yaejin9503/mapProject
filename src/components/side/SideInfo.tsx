@@ -148,7 +148,9 @@ export default function SideInfo(props: IPropsMap) {
                 {houses?.map((house) => {
                   return (
                     <div className="flex w-full p-1">
-                      <div className="w-1/3 text-center">{house.houseName}</div>
+                      <div className="w-1/3 overflow-auto text-center whitespace-nowrap">
+                        {house.houseName}
+                      </div>
                       <div className="w-1/5 text-center">
                         {house.residentialType}
                       </div>
