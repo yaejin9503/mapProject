@@ -1,6 +1,7 @@
 # 공공임대주택 지도 서비스
 
 배포 url: <a href="https://map-project-phi.vercel.app">[https://map-project-phi.vercel.app](https://map-project-phi.vercel.app)</a>
+<br/>
 
 ## 프로젝트 소개
 
@@ -10,7 +11,8 @@
 - 주소별 마커가 등록되어있어 주택 위치를 빠르게 파악 가능합니다.
 - 각각의 주택 상세정보를 마커에서 확인할 수 있습니다.
 - 주택명, 주소로 검색이 가능하여 원하는 주택을 찾을 수 있습니다.
-  <br/>
+
+<br/>
 
 ## 1. 개발 환경
 
