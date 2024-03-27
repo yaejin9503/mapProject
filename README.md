@@ -14,6 +14,13 @@
 
 <br/><br/>
 
+## 프로젝트 기간 및 인원
+
+프로젝트 진행 기간: 2024.01 - 진행중
+진행 인원: 1명 🙋‍♀️ <a href="https://github.com/yaejin9503">@yaejin9503</a>
+
+<br/>
+
 ## 1. 개발 환경
 
 Front: React.js, TypeScript, Zustand, TailwindCss, React Query
