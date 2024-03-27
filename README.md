@@ -23,10 +23,10 @@
 
 ## 1. 개발 환경
 
-Front: React.js, TypeScript, Zustand, TailwindCss, React Query
-Back: Firebase real database
-bundler: Vite
-deploy: Vercel
+Front: React.js, TypeScript, Zustand, TailwindCss, React Query<br/>
+Back: Firebase real database<br/>
+bundler: Vite<br/>
+deploy: Vercel<br/>
 
   <br/>
 
