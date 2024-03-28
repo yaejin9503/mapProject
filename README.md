@@ -66,7 +66,7 @@ deploy: Vercel<br/>
 
 3. <b>주택명 or 주소 검색</b>
 
-- 동시성 렌더링으로 구현하여, 결과에 따른 입력에 영향을 주지 않음
+- Concurrent Rendering을 적용하여 주소 검색시 결과를 호출하는 것에 따른 영향을 받지 않음.
 - 주소와 주택명을 검색할 수 있음<br/>
   ![alt text](readme/img/image-1.png)
 
