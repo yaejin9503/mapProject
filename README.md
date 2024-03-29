@@ -1,6 +1,6 @@
 # 공공임대주택 지도 서비스
 
-배포 url: <a href="https://map-project-phi.vercel.app">[https://map-project-phi.vercel.app](https://map-project-phi.vercel.app)</a>
+배포 url: <a href="https://www.public-rent-house.site">[https://www.public-rent-house.site](https://www.public-rent-house.site)</a>
 <br/><br/>
 
 ## 프로젝트 소개
