@@ -27,6 +27,9 @@ export type HouseInfo = {
   longitude: number;
   latitude: number;
   selected?: boolean;
+  supply?: number | string;
+  ptype?: string;
+  notiType: string;
 };
 
 export type MarkerInfo = {
@@ -52,3 +55,18 @@ export interface IpropsSearchResult {
   query: string;
   isStale: boolean;
 }
+
+export type Notification = {
+  id: string;
+  year: number;
+  count: 1;
+  name: string;
+  applicationStartDate: string;
+  applicationEndDate: string;
+  applicationPassDate: string;
+  documentStartDate: string;
+  documentEndDate: string;
+  finalPass: string;
+  moveInDate: string;
+  url: string;
+};

@@ -7,10 +7,12 @@ import KakaoMapRoadView from "../units/KakaoMapRoadView";
 import { getSameAddressHouseData } from "../../api/houseApi";
 import { BsChevronDoubleDown } from "@react-icons/all-files/bs/BsChevronDoubleDown";
 import { FiChevronRight } from "@react-icons/all-files/fi/FiChevronRight";
+import { useHouseStore } from "../../store/houseStore";
 
 export default function SideInfo(props: IPropsMap) {
   const { selectedMarkerId, setSelectedMarkerId } = useUserStore();
   const { rank } = useOptionStore();
+  const { notificationArrs } = useHouseStore();
   const [chkUnivStu, setChkUnivStu] = useState(false);
   const [originalData, setOriginalData] = useState<HouseInfo[]>([]);
   const [houses, setHouses] = useState<HouseInfo[]>([]);
@@ -19,6 +21,10 @@ export default function SideInfo(props: IPropsMap) {
   const selectedHouse = props.data.find(
     (item) => item.id === Number(selectedMarkerId)
   );
+
+  const oneNotification = notificationArrs.filter(
+    (item) => item.id === selectedHouse?.notiType
+  )[0];
 
   const filterPrice = (rank: number, chkUnivStu: boolean, type: string) => {
     if (selectedHouse) {
@@ -101,19 +107,52 @@ export default function SideInfo(props: IPropsMap) {
             </div>
             <h2 className="text-xl font-bold">{selectedHouse.houseName}</h2>
             <div className="mb-5">{selectedHouse.address}</div>
-            <div className="flex justify-between mb-3">
-              <div className="font-bold">
+            <div className="flex mb-3">
+              <div className="font-bold">모집 일정</div>
+              {new Date() < new Date(oneNotification.applicationEndDate) && (
+                <div className="flex items-center px-2 py-1 ml-3 text-xs font-bold text-white rounded bg-sky-300 animate-bounce">
+                  모집중✨
+                </div>
+              )}
+            </div>
+            <table className="w-full text-center border border-collapse table-fixed mb-7 border-slate-300">
+              <tr>
+                <th className="py-0.5 bg-slate-100">접수 시작</th>
+                <td className="py-0.5">
+                  {" "}
+                  {oneNotification.applicationStartDate}
+                </td>
+              </tr>
+              <tr>
+                <th className="py-0.5 bg-slate-100">접수 종료</th>
+                <td className="py-0.5">
+                  {" "}
+                  {oneNotification.applicationEndDate}
+                </td>
+              </tr>
+              <tr>
+                <th className="py-0.5 bg-slate-100">당첨자 발표</th>
+                <td className="py-0.5">
+                  {" "}
+                  {oneNotification.applicationPassDate}
+                </td>
+              </tr>
+            </table>
+            <div className="flex justify-between mt-6">
+              <div className="mb-3 font-bold">
                 {rank === 1 ? "1순위" : "2-3순위"} 보증금
               </div>
               <div>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={chkUnivStu}
-                    onChange={() => setChkUnivStu(!chkUnivStu)}
-                  />
-                  <span className="ml-1">대학생 입니다.</span>
-                </label>
+                {selectedHouse.typeName !== "청년안심주택" && (
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={chkUnivStu}
+                      onChange={() => setChkUnivStu(!chkUnivStu)}
+                    />
+                    <span className="ml-1">대학생 입니다.</span>
+                  </label>
+                )}
               </div>
             </div>
             <table className="w-full text-center border border-collapse table-fixed mb-7 border-slate-300">
@@ -141,8 +180,16 @@ export default function SideInfo(props: IPropsMap) {
               <div className="flex w-full py-1 mb-2 border-b border-b-slate-300 text-slate-600">
                 <div className="w-1/3 text-center">주택명</div>
                 <div className="w-1/5 text-center">타입</div>
-                <div className="w-1/4 text-center">호수</div>
-                <div className="w-1/4 text-center">전용면적</div>
+                <div className="w-1/4 text-center">
+                  {selectedHouse.typeName.includes("안심")
+                    ? "모집 호수(개)"
+                    : "호수"}
+                </div>
+                {selectedHouse.typeName.includes("안심") ? (
+                  <div className="w-1/4 text-center">신청 자격</div>
+                ) : (
+                  <div className="w-1/4 text-center">전용면적</div>
+                )}
               </div>
               <div className="mt-2">
                 {houses?.map((house) => {
@@ -151,13 +198,29 @@ export default function SideInfo(props: IPropsMap) {
                       <div className="w-1/3 overflow-auto text-center whitespace-nowrap">
                         {house.houseName}
                       </div>
-                      <div className="w-1/5 text-center">
+                      <div className="w-1/5 overflow-auto text-center whitespace-nowrap">
                         {house.residentialType}
                       </div>
-                      <div className="w-1/4 text-center">{house?.roomNum}</div>
                       <div className="w-1/4 text-center">
-                        {house.ExclusiveArea}
+                        {house.typeName.includes("안심")
+                          ? house.supply
+                          : house.roomNum}
                       </div>
+                      {house.typeName.includes("안심") ? (
+                        <div className="w-1/4 text-center">
+                          {house.ptype === "A"
+                            ? "청년"
+                            : house.ptype === "B1"
+                            ? "신혼1"
+                            : house.ptype === "B2"
+                            ? "신혼2"
+                            : "기타"}
+                        </div>
+                      ) : (
+                        <div className="w-1/4 text-center">
+                          {house.ExclusiveArea}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -172,6 +235,11 @@ export default function SideInfo(props: IPropsMap) {
                 )}
               </div>
             </div>
+            {/* <div>
+              <a href="https://www.i-sh.co.kr/main/index.do" target="_blank">
+                sh주택공사 바로가기
+              </a>
+            </div> */}
           </div>
         </section>
       )}

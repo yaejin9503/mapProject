@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
 import { HouseInfo } from "./commons/types/types";
-import { houseWithGeocoder } from "./api/houseApi";
+import { getNotification, houseWithGeocoder } from "./api/houseApi";
 import { getMyGeoLocation } from "./api/userApi";
 import { useUserStore } from "./store/mapStore";
 import Container from "./components/units/Container";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useHouseStore } from "./store/houseStore";
 
 function App() {
   const [addGeocoderData, setAddGeoCoderData] = useState<Array<HouseInfo>>([]);
   const { setLongLat, setMyLongLat } = useUserStore();
+  const { setNotificationArrs } = useHouseStore();
 
   useEffect(() => {
     // 내 현재 위치를 가져오는 함수
@@ -27,8 +29,15 @@ function App() {
       if (data) setAddGeoCoderData(data);
     };
 
+    //전체 공고 가져오는 로직
+    const getNotificationFn = async () => {
+      const data = await getNotification();
+      if (data) setNotificationArrs(data);
+    };
+
     getMyGeoCoder();
     getGeoCoderData();
+    getNotificationFn();
   }, []);
 
   const queryClient = new QueryClient();
