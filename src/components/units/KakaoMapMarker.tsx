@@ -86,7 +86,7 @@ export default function KakaoMapMarker(props: IMarkerprops) {
                   padding: 3px 7px;
                   font-size: 12px;
                   ">
-          <div>sh주택공사</div> 
+          <div>${house.typeName}</div> 
           <div style="font-size:11px">
             ${(rank === 1
               ? house.firstNumYouthRent
