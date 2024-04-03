@@ -1,9 +1,24 @@
-import { HouseInfo, AddressFucResult } from "../commons/types/types";
+import {
+  HouseInfo,
+  AddressFucResult,
+  Notification,
+} from "../commons/types/types";
 import uniqBy from "lodash-es/uniqBy";
+
+// 공고 데이터 가져오는 함수
+export const getNotification = async (): Promise<Notification[]> => {
+  const result = await fetch(
+    "https://pulic-rent-housing-default-rtdb.firebaseio.com/notification.json"
+  );
+  const items = await result.json();
+  console.log("items", items);
+  return items;
+};
+
 // 원본 데이터 가져오는 함수
 export const getHouseData = async (): Promise<HouseInfo[]> => {
   const result = await fetch(
-    "https://pulic-rent-housing-default-rtdb.firebaseio.com/house.json"
+    "https://pulic-rent-housing-default-rtdb.firebaseio.com/houses.json"
   );
   const items = await result.json();
 
@@ -27,6 +42,7 @@ export const uniqHouseData = async () => {
       .split(" ")
       .join("")
       .trim();
+    house.address = house.address.slice(0, house.address.indexOf("("));
     return house;
   });
 
@@ -59,6 +75,7 @@ export const houseWithGeocoder = async () => {
     const returnData = await Promise.all(
       _uniqHouseData.map((house) => addressSearchPromise(house))
     );
+
     if (!returnData) return;
 
     const geocoderData = _uniqHouseData.map((house) => {
