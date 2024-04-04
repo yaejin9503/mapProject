@@ -12,7 +12,12 @@ interface IMarkerprops {
 
 export default function KakaoMapMarker(props: IMarkerprops) {
   // const [isOpen, setIsOpen] = useState<boolean>(false);
-  const { setSelectedMarkerId, setLongLat } = useUserStore();
+  const {
+    setSelectedMarkerId,
+    setLongLat,
+    selectedMarkerId,
+    searchSelectedMarkerId,
+  } = useUserStore();
   const { rank } = useOptionStore();
   const overay = useRef<kakao.maps.CustomOverlay[]>();
   // 원본 객체나 원본 배열은 건들이지 않는 방법으로 하는게 좋다!! <- react를 떠나서
@@ -62,6 +67,18 @@ export default function KakaoMapMarker(props: IMarkerprops) {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.data, rank]);
+
+  useEffect(() => {
+    const markerHouses = markerHouse.map((house) => {
+      if (house.id === selectedMarkerId) {
+        house.selected = true;
+      } else house.selected = false;
+      return house;
+    });
+    removeOveray();
+    createOveray(markerHouses);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchSelectedMarkerId]);
 
   const addEventHandle = (
     target: HTMLElement,

@@ -4,7 +4,8 @@ import { HouseInfo, IpropsSearchResult } from "../../../commons/types/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 export default function SearchResult(props: IpropsSearchResult) {
-  const { setSelectedMarkerId, setLongLat } = useUserStore(); //setLongLat,
+  const { setSelectedMarkerId, setLongLat, setSearchSelectedMarkerId } =
+    useUserStore(); //setLongLat,
 
   const { data } = useSuspenseQuery({
     queryKey: ["deferredValue", props.query],
@@ -13,6 +14,7 @@ export default function SearchResult(props: IpropsSearchResult) {
 
   const clickSearchResult = async (house: HouseInfo) => {
     setSelectedMarkerId(house.id);
+    setSearchSelectedMarkerId(house.id);
 
     const houses = await addressSearchPromise(house);
     if (houses) {
