@@ -4,6 +4,7 @@ import { useUserStore } from "../../store/mapStore";
 import KakaoMap from "../common/KakaoMap";
 import OptionSearch from "../options/OptionSearch";
 import { Outlet } from "react-router-dom";
+import SideInfo from "../side/SideInfo";
 // const SideInfo = lazy(() => import("../side/SideInfo"));
 
 export default function Container() {
@@ -16,7 +17,7 @@ export default function Container() {
       <div className="flex">
         {selectedMarkerId !== 0 && (
           <Suspense fallback={<div>loading..</div>}>
-            {/* <SideInfo key={selectedMarkerId} /> */}
+            <SideInfo key={selectedMarkerId} />
             <Outlet />
           </Suspense>
         )}

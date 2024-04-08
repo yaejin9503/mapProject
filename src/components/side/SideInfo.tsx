@@ -8,7 +8,7 @@ import { getSameAddressHouseData } from "../../api/houseApi";
 import { BsChevronDoubleDown } from "@react-icons/all-files/bs/BsChevronDoubleDown";
 import { FiChevronRight } from "@react-icons/all-files/fi/FiChevronRight";
 import { useHouseStore } from "../../store/houseStore";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 
 export default function SideInfo() {
   const { selectedMarkerId, setSelectedMarkerId } = useUserStore();
@@ -17,16 +17,16 @@ export default function SideInfo() {
   const [chkUnivStu, setChkUnivStu] = useState(false);
   const [originalData, setOriginalData] = useState<HouseInfo[]>([]);
   const [houses, setHouses] = useState<HouseInfo[]>([]);
-  const location = useLocation();
+  //  const location = useLocation();
 
   // if(location.path.split('/house'))
 
-  useEffect(() => {
-    if (location.pathname.includes("house")) {
-      const id = location.pathname.split("/house/")[1];
-      setSelectedMarkerId(Number(id));
-    }
-  }, [location]);
+  // useEffect(() => {
+  //   if (location.pathname.includes("house")) {
+  //     const id = location.pathname.split("/house/")[1];
+  //     setSelectedMarkerId(Number(id));
+  //   }
+  // }, [location]);
 
   const housesLength = originalData.length;
   const selectedHouse = houseData.find(

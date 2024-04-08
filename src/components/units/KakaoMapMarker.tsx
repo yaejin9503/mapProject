@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { HouseInfo, MarkerInfo } from "../../commons/types/types";
 import { useOptionStore } from "../../store/optionStore";
 import { useUserStore } from "../../store/mapStore";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 // import ModalInfo from "../common/modal/ModalInfo";
 
 interface IMarkerprops {
@@ -20,7 +20,7 @@ export default function KakaoMapMarker(props: IMarkerprops) {
   } = useUserStore();
   const { rank } = useOptionStore();
   const overay = useRef<kakao.maps.CustomOverlay[]>();
-  const navigete = useNavigate();
+  // const navigete = useNavigate();
 
   const markerHouse = useMemo(
     () =>
@@ -138,7 +138,7 @@ export default function KakaoMapMarker(props: IMarkerprops) {
           longitude: selectedHouse.longitude,
           latitude: selectedHouse.latitude,
         });
-        navigete(`/house/${contents.id}`);
+        // navigete(`/house/${contents.id}`);
       }
     });
   };
