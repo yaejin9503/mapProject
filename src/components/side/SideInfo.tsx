@@ -12,7 +12,7 @@ import { useLocation } from "react-router-dom";
 
 export default function SideInfo() {
   const { selectedMarkerId, setSelectedMarkerId } = useUserStore();
-  const { rank } = useOptionStore();
+  const { rank, setRank } = useOptionStore();
   const { notificationArrs, houseData } = useHouseStore();
   const [chkUnivStu, setChkUnivStu] = useState(false);
   const [originalData, setOriginalData] = useState<HouseInfo[]>([]);
@@ -160,12 +160,12 @@ export default function SideInfo() {
                 </td>
               </tr>
             </table>
-            <div className="flex justify-between mt-6">
-              <div className="mb-3 font-bold">
+            <div className="flex items-center justify-between mt-6 mb-3">
+              <div className="font-bold">
                 {rank === 1 ? "1순위" : "2-3순위"} 보증금
               </div>
               <div>
-                {selectedHouse.typeName !== "청년안심주택" && (
+                {selectedHouse.typeName !== "청년안심주택" ? (
                   <label>
                     <input
                       type="checkbox"
@@ -174,6 +174,15 @@ export default function SideInfo() {
                     />
                     <span className="ml-1">대학생 입니다.</span>
                   </label>
+                ) : (
+                  <select
+                    className="p-2 bg-white rounded"
+                    value={rank}
+                    onChange={(e) => setRank(Number(e.target.value))}
+                  >
+                    <option value="1">1순위</option>
+                    <option value="2">2-3순위</option>
+                  </select>
                 )}
               </div>
             </div>
