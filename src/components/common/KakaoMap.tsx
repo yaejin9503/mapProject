@@ -1,18 +1,21 @@
 import { useEffect, useRef, useState } from "react";
-import { IPropsMap } from "../../commons/types/types";
+// import { IPropsMap } from "../../commons/types/types";
 import KakaoMapMarker from "../units/KakaoMapMarker";
 import { useUserStore } from "../../store/mapStore";
 import { FiPlus } from "@react-icons/all-files/fi/FiPlus";
 import { FiMinus } from "@react-icons/all-files/fi/FiMinus";
 import { BiCurrentLocation } from "@react-icons/all-files/bi/BiCurrentLocation";
+import { useHouseStore } from "../../store/houseStore";
 
-export default function KakaoMap(props: IPropsMap) {
+export default function KakaoMap() {
+  // props: IPropsMap
   const mapDiv = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<kakao.maps.Map>();
   const [currentMarker, setCurrentMarker] = useState<kakao.maps.Marker>();
   // 왜 필요해? kakao map이 생성되는 타이밍을 알아야된다, 마커에도 중앙값에도,
   //  effect의 동작은 렌더링이 일어났을 떄, 디펜던시로 일어난 값이 바뀌는 지 알아야 되는 거 니까.
   const { longitude, latitude, myLongitude, myLatitude } = useUserStore();
+  const { houseData } = useHouseStore();
 
   useEffect(() => {
     const container = mapDiv.current as HTMLDivElement;
@@ -71,7 +74,7 @@ export default function KakaoMap(props: IPropsMap) {
 
   return (
     <>
-      {map ? <KakaoMapMarker map={map} data={props.data} /> : <> </>}
+      {map ? <KakaoMapMarker map={map} data={houseData} /> : <> </>}
       <div
         ref={mapDiv}
         style={{

@@ -2,10 +2,12 @@ import { useUserStore } from "../../../store/mapStore";
 import { addressSearchPromise, findHouses } from "../../../api/houseApi";
 import { HouseInfo, IpropsSearchResult } from "../../../commons/types/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 export default function SearchResult(props: IpropsSearchResult) {
   const { setSelectedMarkerId, setLongLat, setSearchSelectedMarkerId } =
     useUserStore(); //setLongLat,
+  const navigete = useNavigate();
 
   const { data } = useSuspenseQuery({
     queryKey: ["deferredValue", props.query],
@@ -23,6 +25,7 @@ export default function SearchResult(props: IpropsSearchResult) {
         latitude: Number(houses.y),
       });
     }
+    navigete(`/house/${house.id}`);
   };
 
   /**
@@ -32,7 +35,7 @@ export default function SearchResult(props: IpropsSearchResult) {
    */
   if (Array.isArray(data) && data.length > 0) {
     return (
-      <div className="absolute mt-1 bg-white w-80 border border-[#9ca3af] rounded text-sm overflow-y-auto max-h-52">
+      <div className="absolute mt-1 bg-white md:w-80 w-60 border border-[#9ca3af] rounded text-sm overflow-y-auto max-h-52">
         <div style={{ opacity: props.isStale ? 0.5 : 1 }}>
           <ul>
             {data.map((house) => (

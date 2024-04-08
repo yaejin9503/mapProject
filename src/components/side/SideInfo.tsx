@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useMemo, useState } from "react";
-import { HouseInfo, IPropsMap } from "../../commons/types/types";
+import { HouseInfo } from "../../commons/types/types";
 import { useUserStore } from "../../store/mapStore";
 import { useOptionStore } from "../../store/optionStore";
 import KakaoMapRoadView from "../units/KakaoMapRoadView";
@@ -8,17 +8,28 @@ import { getSameAddressHouseData } from "../../api/houseApi";
 import { BsChevronDoubleDown } from "@react-icons/all-files/bs/BsChevronDoubleDown";
 import { FiChevronRight } from "@react-icons/all-files/fi/FiChevronRight";
 import { useHouseStore } from "../../store/houseStore";
+import { useLocation } from "react-router-dom";
 
-export default function SideInfo(props: IPropsMap) {
+export default function SideInfo() {
   const { selectedMarkerId, setSelectedMarkerId } = useUserStore();
   const { rank } = useOptionStore();
-  const { notificationArrs } = useHouseStore();
+  const { notificationArrs, houseData } = useHouseStore();
   const [chkUnivStu, setChkUnivStu] = useState(false);
   const [originalData, setOriginalData] = useState<HouseInfo[]>([]);
   const [houses, setHouses] = useState<HouseInfo[]>([]);
+  const location = useLocation();
+
+  // if(location.path.split('/house'))
+
+  useEffect(() => {
+    if (location.pathname.includes("house")) {
+      const id = location.pathname.split("/house/")[1];
+      setSelectedMarkerId(Number(id));
+    }
+  }, [location]);
 
   const housesLength = originalData.length;
-  const selectedHouse = props.data.find(
+  const selectedHouse = houseData.find(
     (item) => item.id === Number(selectedMarkerId)
   );
 
@@ -26,35 +37,46 @@ export default function SideInfo(props: IPropsMap) {
     (item) => item.id === selectedHouse?.notiType
   )[0];
 
-  const filterPrice = (rank: number, chkUnivStu: boolean, type: string) => {
-    if (selectedHouse) {
-      if (rank === 1 && chkUnivStu) {
-        return type === "deposit"
-          ? selectedHouse.firstNumCollegeStudentDeposit
-          : selectedHouse.firstNumCollegeStudentRent;
-      } else if (rank === 2 && chkUnivStu) {
-        return type === "deposit"
-          ? selectedHouse.secondNumCollegeStudentDeposit
-          : selectedHouse.secondNumCollegeStudentRent;
-      } else if (rank === 1) {
-        return type === "deposit"
-          ? selectedHouse.fristNumYouthDeposit
-          : selectedHouse.firstNumYouthRent;
+  const filterPrice = (rank: number, chkUnivStu: boolean) => {
+    const priceArrs = houses.filter(
+      (house) => house.notSpaceAddress === selectedHouse?.notSpaceAddress
+    );
+    const result: { residentialType: string; deposit: number; rent: number }[] =
+      [];
+
+    priceArrs.forEach((house) => {
+      let rent = 0;
+      let deposit = 0;
+
+      if (rank === 1) {
+        if (chkUnivStu) {
+          deposit = house.firstNumCollegeStudentDeposit;
+          rent = house.firstNumCollegeStudentRent;
+        } else {
+          deposit = house.fristNumYouthDeposit;
+          rent = house.firstNumYouthRent;
+        }
       } else {
-        return type === "deposit"
-          ? selectedHouse.secondNumYouthDeposit
-          : selectedHouse.secondNumYouthRent;
+        if (chkUnivStu) {
+          deposit = house.secondNumCollegeStudentDeposit;
+          rent = house.secondNumCollegeStudentRent;
+        } else {
+          deposit = house.secondNumYouthDeposit;
+          rent = house.secondNumYouthRent;
+        }
       }
-    }
+      result.push({
+        residentialType: house.residentialType,
+        deposit,
+        rent,
+      });
+    });
+    return result;
   };
 
-  const deposit = useMemo(
-    () => filterPrice(rank, chkUnivStu, "deposit"),
-    [rank, chkUnivStu]
-  );
-  const rent = useMemo(
-    () => filterPrice(rank, chkUnivStu, "rent"),
-    [rank, chkUnivStu]
+  const depositRentArrs = useMemo(
+    () => filterPrice(rank, chkUnivStu),
+    [rank, chkUnivStu, houses]
   );
 
   useEffect(() => {
@@ -70,7 +92,7 @@ export default function SideInfo(props: IPropsMap) {
       }
     };
     getHoues();
-  }, []);
+  }, [selectedMarkerId]);
 
   const handleClickMoreBtn = () => {
     const data = houses.concat(
@@ -86,7 +108,7 @@ export default function SideInfo(props: IPropsMap) {
   return (
     <>
       {selectedHouse && (
-        <section className="flex-1 h-screen p-4 overflow-scroll text-black bg-white w-96">
+        <section className="z-50 flex-1 w-screen h-screen p-4 overflow-scroll text-black bg-white md:w-96">
           <div>
             <div className="flex justify-end mb-3">
               <button onClick={handleClickClose}>
@@ -94,8 +116,8 @@ export default function SideInfo(props: IPropsMap) {
               </button>
             </div>
             <KakaoMapRoadView
-            // selectedLat={selectedHouse.latitude}
-            // selectedLng={selectedHouse.longitude}
+              selectedLat={selectedHouse.latitude}
+              selectedLng={selectedHouse.longitude}
             />
             <div className="mt-2 mb-2">
               <span className="px-2 py-0.5 border border-green-600 rounded-md text-sm text-green-600">
@@ -157,23 +179,31 @@ export default function SideInfo(props: IPropsMap) {
             </div>
             <table className="w-full text-center border border-collapse table-fixed mb-7 border-slate-300">
               <tr>
+                <th className="w-1/5 py-0.5 bg-slate-100">타입</th>
                 <th className="py-0.5 bg-slate-100">보증금</th>
                 <th className="py-0.5  bg-slate-100">월세</th>
               </tr>
-              <tr>
-                <td className="py-0.5">
-                  {deposit?.toLocaleString("ko-KR", {
-                    style: "currency",
-                    currency: "KRW",
-                  })}
-                </td>
-                <td className="py-0.5">
-                  {rent?.toLocaleString("ko-KR", {
-                    style: "currency",
-                    currency: "KRW",
-                  })}
-                </td>
-              </tr>
+              {depositRentArrs?.map((item) => {
+                return (
+                  <tr>
+                    <td className="py-0.5 overflow-auto text-center whitespace-nowrap">
+                      {item.residentialType}
+                    </td>
+                    <td className="py-0.5">
+                      {item.deposit.toLocaleString("ko-KR", {
+                        style: "currency",
+                        currency: "KRW",
+                      })}
+                    </td>
+                    <td className="py-0.5">
+                      {item.rent.toLocaleString("ko-KR", {
+                        style: "currency",
+                        currency: "KRW",
+                      })}
+                    </td>
+                  </tr>
+                );
+              })}
             </table>
             <div className="mb-2 font-bold">주택 공급 정보</div>
             <div>

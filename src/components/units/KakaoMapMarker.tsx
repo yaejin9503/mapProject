@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef } from "react";
-
 import { HouseInfo, MarkerInfo } from "../../commons/types/types";
 import { useOptionStore } from "../../store/optionStore";
 import { useUserStore } from "../../store/mapStore";
+import { useNavigate } from "react-router-dom";
 // import ModalInfo from "../common/modal/ModalInfo";
 
 interface IMarkerprops {
@@ -20,13 +20,14 @@ export default function KakaoMapMarker(props: IMarkerprops) {
   } = useUserStore();
   const { rank } = useOptionStore();
   const overay = useRef<kakao.maps.CustomOverlay[]>();
-  // 원본 객체나 원본 배열은 건들이지 않는 방법으로 하는게 좋다!! <- react를 떠나서
+  const navigete = useNavigate();
+
   const markerHouse = useMemo(
     () =>
       props.data.map((house) => {
         return {
           ...house,
-          selected: false,
+          selected: selectedMarkerId === house.id ? true : false,
         };
       }),
     [props.data]
@@ -68,6 +69,7 @@ export default function KakaoMapMarker(props: IMarkerprops) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.data, rank]);
 
+  // 검색 시 클릭하는 결과값 처리
   useEffect(() => {
     const markerHouses = markerHouse.map((house) => {
       if (house.id === selectedMarkerId) {
@@ -136,6 +138,7 @@ export default function KakaoMapMarker(props: IMarkerprops) {
           longitude: selectedHouse.longitude,
           latitude: selectedHouse.latitude,
         });
+        navigete(`/house/${contents.id}`);
       }
     });
   };
