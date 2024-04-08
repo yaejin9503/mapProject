@@ -11,7 +11,6 @@ export const getNotification = async (): Promise<Notification[]> => {
     "https://pulic-rent-housing-default-rtdb.firebaseio.com/notification.json"
   );
   const items = await result.json();
-  console.log("items", items);
   return items;
 };
 
@@ -25,17 +24,8 @@ export const getHouseData = async (): Promise<HouseInfo[]> => {
   return items;
 };
 
-//id와 주소가 같은 데이터만 가져오는 함수
-export const getSameAddressHouseData = async (id: number) => {
-  const houseData = await getHouseData();
-  const sameAddress = houseData.filter((house) => house.id === id)[0]?.address;
-  return houseData.filter((house) => house.address == sameAddress);
-};
-
-// 중복 주소 제거한 데이터 가져오는 함수
-export const uniqHouseData = async () => {
-  const houseData = await getHouseData();
-  const houseArray: Array<HouseInfo> = houseData.map((house: HouseInfo) => {
+const houseAddressEdit = (houses: HouseInfo[]) => {
+  return houses.map((house: HouseInfo) => {
     house.notSpaceAddress = house.address
       .slice(0, house.address.indexOf("("))
       .replace("서울특별시", "서울")
@@ -45,7 +35,21 @@ export const uniqHouseData = async () => {
     house.address = house.address.slice(0, house.address.indexOf("("));
     return house;
   });
+};
 
+//id와 주소가 같은 데이터만 가져오는 함수
+export const getSameAddressHouseData = async (id: number) => {
+  const houseData = await getHouseData();
+  const houseArray = houseAddressEdit(houseData);
+  const sameAddress = houseArray.filter((house) => house.id === id)[0]
+    ?.notSpaceAddress;
+  return houseArray.filter((house) => house.notSpaceAddress == sameAddress);
+};
+
+// 중복 주소 제거한 데이터 가져오는 함수
+export const uniqHouseData = async () => {
+  const houseData = await getHouseData();
+  const houseArray = houseAddressEdit(houseData);
   const notDupplicate: Array<HouseInfo> = uniqBy(houseArray, "notSpaceAddress");
   return notDupplicate;
 };
